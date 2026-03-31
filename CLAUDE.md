@@ -4,15 +4,15 @@ ICP is management console for WSO2 integration runtimes MI, BI (monitors/on runt
 
 ## MI and BI
 
-**MI** — A Product, Java. Contains many artifacts. Mgt API with JWT auth.
-**BI** — VSCode fork. But in this context, an app (artifact) written _in_ Ballerina Integrator, embedding icp-runtime-bridge.
+- MI (Micro Integrator): A Product, Java. Contains many artifacts. Mgt API with JWT auth.
+- BI: VSCode fork called Ballerina Integrator. But in this context, BI is an app (artifact) written _in_ BI, embedding icp-runtime-bridge.
 
 |                | BI                           | MI          |
 | -------------- | ---------------------------- | ----------- |
 | Heartbeat(10s) | `icp-runtime-bridge`         | builtin     |
 | Control Signal | piggybacked on the heartbeat | Mgt API     |
 | Config         | deployment.toml, log4j       | Config.toml |
-| Artifact Lang  | Ballerina language           | XML         |
+| Artifact Lang  | Ballerina language (-> .jar) | XML         |
 | Deployment     | Compiled                     | Interpreted |
 
 # Structure
@@ -21,8 +21,8 @@ ICP is management console for WSO2 integration runtimes MI, BI (monitors/on runt
 - ./mi
 - ./bi/icp-runtime-bridge
 - ./bi/app
-- ./envs : envs for testing, feel free to make more
-- ./envs/compose-wire : docker with icp + 2 bi + mi (proxy) + mi (api) + PostgreSQL + wire dump tools
-- ./envs/native - icp + bi + mi running bare, OpenSearch on docker
-- ./downloads/ballerina-\* : used to build icp and bi/app
-- Makefile : `make` to build and update envs/compose-debug
+- ./env : env for testing, feel free to make more
+- ./env/wire-dump : docker compose with icp + 2 bi + mi (proxy) + mi (api) + PostgreSQL + wire dump tools
+- ./env/native-split : icp backend(jar) + icp frontend(vite) + bi + mi running bare, OpenSearch on docker
+- ./downloads/ballerina-\* : used to build icp and bi
+- Makefile : `make icp`, `make run-env-native`
