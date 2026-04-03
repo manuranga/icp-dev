@@ -1,1 +1,5 @@
 downloads/
+.stamps
+dist/
+env/*/
+!env/*/config/
