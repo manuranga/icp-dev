@@ -1,0 +1,225 @@
+name: proxied
+
+services:
+  postgres:
+    build:
+      context: .
+      additional_contexts:
+        dist: ../../dist
+      dockerfile_inline: |
+        FROM alpine:3 AS extract
+        RUN apk add --no-cache unzip
+        COPY --from=dist wso2-integration-control-plane-*.zip /tmp/icp.zip
+        RUN unzip -qo /tmp/icp.zip -d /tmp && mv /tmp/wso2-integrat* /tmp/icp
+        FROM postgres:16-alpine
+        COPY --from=extract /tmp/icp/dbscripts/postgresql_init.sql /docker-entrypoint-initdb.d/01-init.sql
+        COPY --from=extract /tmp/icp/dbscripts/credentials_postgresql_init.sql /docker-entrypoint-initdb.d/02-credentials.sql
+        COPY config/move-credentials-to-schema.sql /docker-entrypoint-initdb.d/01b-setup-schema.sql
+        COPY config/fix-credentials-search-path.sql /docker-entrypoint-initdb.d/03-fix-search-path.sql
+        COPY config/seed-secrets.sql /docker-entrypoint-initdb.d/04-seed-secrets.sql
+        COPY config/cdc-replica-identity.sql /docker-entrypoint-initdb.d/05-cdc-replica-identity.sql
+    command: >
+      -c wal_level=logical
+      -c max_replication_slots=4
+      -c max_wal_senders=4
+    environment:
+      POSTGRES_DB: icp_database
+      POSTGRES_USER: icpadmin
+      POSTGRES_PASSWORD: "Str0ngP@ss!"
+    expose:
+      - "5432"
+    volumes:
+      - ./mounts/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U icpadmin -d icp_database"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  opensearch:
+    image: opensearchproject/opensearch:2.19.1
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g"
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=Ballerina@123
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    expose:
+      - "9200"
+    volumes:
+      - ./mounts/opensearch:/usr/share/opensearch/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -k -f -u admin:Ballerina@123 https://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=10s || exit 1",
+        ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  icp:
+    build:
+      context: .
+      additional_contexts:
+        dist: ../../dist
+      dockerfile_inline: |
+        FROM alpine:3 AS extract
+        RUN apk add --no-cache unzip
+        COPY --from=dist wso2-integration-control-plane-*.zip /tmp/icp.zip
+        RUN unzip -qo /tmp/icp.zip -d /tmp && mv /tmp/wso2-integrat* /opt/icp
+        FROM eclipse-temurin:21-jre
+        COPY --from=extract /opt/icp /opt/icp
+        COPY config/icp-deployment.toml /opt/icp/conf/deployment.toml
+        COPY --from=ghcr.io/manuranga/net-dump:latest /app/certs/server.crt /tmp/proxy-cert.crt
+        RUN keytool -importcert -noprompt -alias proxy-cert \
+              -file /tmp/proxy-cert.crt \
+              -keystore /opt/icp/conf/security/ballerinaTruststore.p12 \
+              -storepass ballerina \
+            && rm /tmp/proxy-cert.crt
+    working_dir: /opt/icp/bin
+    command: ["bash", "-c", "/opt/icp/bin/icp.sh 2>&1 | tee /opt/icp/logs/icp.log"]
+    volumes:
+      - ./logs/icp:/opt/icp/logs
+    expose:
+      - "9445"
+      - "9447"
+      - "9449"
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 2 bash -c 'echo > /dev/tcp/localhost/9445' 2>/dev/null"]
+      interval: 5s
+      timeout: 3s
+      retries: 40
+      start_period: 10s
+    depends_on:
+      opensearch:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  db-dump:
+    image: ghcr.io/manuranga/db-dump:latest
+    volumes:
+      - ./logs/wire-dump:/app/logs
+      - ./logs/wire-dump/.db-offsets:/app/data
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: icp_database
+      DB_USER: icpadmin
+      DB_PASSWORD: "Str0ngP@ss!"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  bi:
+    build:
+      context: .
+      additional_contexts:
+        dist: ../../dist
+      dockerfile_inline: |
+        FROM eclipse-temurin:21-jre
+        COPY --from=dist icp.jar /app/icp.jar
+        COPY config/Config.toml /app/Config.toml
+    working_dir: /app
+    command: ["java", "-jar", "icp.jar"]
+    volumes:
+      - ./logs/bi:/app/logs
+    expose:
+      - "9090"
+    depends_on:
+      proxy:
+        condition: service_started
+
+  mi:
+    build:
+      context: .
+      additional_contexts:
+        dist: ../../dist
+      dockerfile_inline: |
+        FROM alpine:3 AS extract
+        RUN apk add --no-cache unzip
+        COPY --from=dist wso2mi-*.zip /tmp/mi.zip
+        RUN unzip -qo /tmp/mi.zip -d /tmp && mv /tmp/wso2mi-* /tmp/mi-extracted
+        FROM eclipse-temurin:21-jre
+        COPY --from=extract /tmp/mi-extracted /opt/mi
+        COPY --from=ghcr.io/manuranga/net-dump:latest /app/certs/server.crt /tmp/proxy-cert.crt
+        COPY config/mi-deployment.toml /opt/mi/conf/deployment.toml
+        RUN keytool -importcert -noprompt -alias proxy-cert \
+              -file /tmp/proxy-cert.crt \
+              -keystore /opt/mi/repository/resources/security/client-truststore.jks \
+              -storepass wso2carbon \
+            && rm /tmp/proxy-cert.crt
+        RUN sed -i \
+              -e '/^appender\.CARBON_LOGFILE\.fileName/d' \
+              -e "s|^appender\.CARBON_LOGFILE\.filePattern.*|appender.CARBON_LOGFILE.filePattern = \$\{sys:logfiles.home\}/wso2carbon-%d{MM-dd-yyyy}-%i.log|" \
+              -e "s|^appender\.CARBON_LOGFILE\.layout\.pattern.*|appender.CARBON_LOGFILE.layout.pattern = [%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}] %5p {%c} %X{Artifact-Container} - %m%ex \$\{sys:icp.runtime.log.suffix:-\}%n|" \
+              -e "s|^appender\.CARBON_LOGFILE\.strategy\.type.*|appender.CARBON_LOGFILE.strategy.type = DirectWriteRolloverStrategy|" \
+              /opt/mi/conf/log4j2.properties
+    working_dir: /opt/mi/bin
+    command: ["bash", "/opt/mi/bin/micro-integrator.sh"]
+    volumes:
+      - ./logs/mi:/opt/mi/repository/logs
+    expose:
+      - "8290"
+      - "8253"
+      - "9164"
+    depends_on:
+      proxy:
+        condition: service_started
+
+  opensearch-setup:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM curlimages/curl:latest
+        COPY config/opensearch-index-template.json /tmp/index-template.json
+    command: >
+      sh -c 'sleep 5 &&
+      curl -sk --retry 5 --retry-delay 3 --retry-connrefused
+      -u admin:Ballerina@123
+      -X PUT "https://opensearch:9200/_index_template/integration-logs"
+      -H "Content-Type: application/json"
+      -d @/tmp/index-template.json &&
+      echo " Index template applied successfully"'
+    depends_on:
+      opensearch:
+        condition: service_healthy
+
+  fluent-bit:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM fluent/fluent-bit:latest
+        COPY config/fluent-bit.conf /fluent-bit/etc/fluent-bit.conf
+        COPY config/fluent-bit-parsers.conf /fluent-bit/etc/parsers.conf
+        COPY config/fluent-bit-scripts.lua /fluent-bit/scripts/scripts.lua
+    volumes:
+      - ./logs/bi:/var/log/ballerina:ro
+      - ./logs/mi:/var/log/mi:ro
+      - ./mounts/fluent-bit:/fluent-bit/db
+    depends_on:
+      opensearch-setup:
+        condition: service_completed_successfully
+
+  proxy:
+    image: ghcr.io/manuranga/net-dump:latest
+    command: ["node", "net-dump.js", "config-docker.json"]
+    volumes:
+      - ./logs/wire-dump:/app/logs
+      - ./config/net-dump-config.json:/app/config-docker.json:ro
+    ports:
+      - "9460:9460"
+    expose:
+      - "9164"
+      - "9456"
+      - "9457"
+      - "9458"
+    depends_on:
+      icp:
+        condition: service_healthy

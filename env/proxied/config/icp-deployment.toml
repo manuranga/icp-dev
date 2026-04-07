@@ -1,0 +1,31 @@
+schedulerIntervalSeconds = 30
+logLevel = "INFO"
+enableAuditLogging = true
+enableMetrics = true
+
+authBackendUrl = "http://proxy:9457"
+observabilityBackendURL = "http://proxy:9458"
+frontendJwtHMACSecret = "default-secret-key-at-least-32-characters-long-for-hs256"
+
+credentialsDbType = "postgresql"
+credentialsDbHost = "postgres"
+credentialsDbPort = 5432
+credentialsDbName = "icp_database"
+credentialsDbUser = "credentials_user"
+credentialsDbPassword = "Str0ngP@ss!"
+
+opensearchUrl = "https://opensearch:9200"
+opensearchUsername = "admin"
+opensearchPassword = "Ballerina@123"
+
+[icp_server.storage]
+dbType = "postgresql"
+dbHost = "postgres"
+dbPort = 5432
+dbName = "icp_database"
+dbUser = "icpadmin"
+dbPassword = "Str0ngP@ss!"
+
+[[ballerina.log.modules]]
+name = "wso2/icp_server"
+level = "DEBUG"

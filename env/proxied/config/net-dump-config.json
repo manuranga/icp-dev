@@ -1,0 +1,61 @@
+{
+  "request_logs": "./logs",
+  "mappings": [
+    {
+      "name": "bi-to-icp",
+      "in": {
+        "port": 9455,
+        "ssl": { "key": "./certs/server.key", "cert": "./certs/server.crt" }
+      },
+      "out": { "host": "icp", "port": 9445, "https": true }
+    },
+    {
+      "name": "ui-to-icp",
+      "in": {
+        "port": 9460,
+        "ssl": { "key": "./certs/server.key", "cert": "./certs/server.crt" }
+      },
+      "out": { "host": "icp", "port": 9445, "https": true },
+      "replace": {
+        "response": [
+          { "from": "https://localhost:9445", "to": "https://localhost:9460" }
+        ]
+      }
+    },
+    {
+      "name": "mi-to-icp",
+      "in": {
+        "port": 9456,
+        "ssl": { "key": "./certs/server.key", "cert": "./certs/server.crt" }
+      },
+      "out": { "host": "icp", "port": 9445, "https": true },
+      "replace": {
+        "request": [
+          { "from": "\"runtimeHostname\":\"localhost\"", "to": "\"runtimeHostname\":\"proxy\"" }
+        ]
+      }
+    },
+    {
+      "name": "icp-to-auth-adaptor",
+      "in": {
+        "port": 9457
+      },
+      "out": { "host": "icp", "port": 9447, "https": true }
+    },
+    {
+      "name": "icp-to-obs-adaptor",
+      "in": {
+        "port": 9458
+      },
+      "out": { "host": "icp", "port": 9449, "https": true }
+    },
+    {
+      "name": "icp-to-mi",
+      "in": {
+        "port": 9164,
+        "ssl": { "key": "./certs/server.key", "cert": "./certs/server.crt" }
+      },
+      "out": { "host": "mi", "port": 9164, "https": true }
+    }
+  ]
+}

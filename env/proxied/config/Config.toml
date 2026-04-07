@@ -1,0 +1,10 @@
+[wso2.icp.runtime.bridge]
+serverUrl = "https://proxy:9455"
+secret = "tmp.single-integration-use-dev-env-secret-for-local-use-only-do-not-use-in-production"
+integration = "sample-integration"
+project = "sample-project"
+environment = "dev"
+heartbeatInterval = 10
+
+[ballerina.log]
+format = "logfmt"
