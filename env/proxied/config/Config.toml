@@ -8,3 +8,8 @@ heartbeatInterval = 10
 
 [ballerina.log]
 format = "logfmt"
+[[ballerina.log.destinations]]
+path = "logs/icp/app.log"
+
+[ballerina.observe]
+metricsLogsEnabled = true
