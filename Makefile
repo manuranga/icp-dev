@@ -5,28 +5,31 @@ endif
 
 include make/deps.mk
 
-.PHONY: icp bi mi start stop reset
+.PHONY: icp bridge bi mi start stop reset
 
 start stop reset:
 	@./make/lifecycle.sh $@ $(word 2,$(MAKECMDGOALS))
 
-# swallow the env name passed as second arg to start/stop/reset
 ifneq ($(filter start stop reset,$(MAKECMDGOALS)),)
 %:
 	@:
 endif
 
-icp: .stamps/icp
-bi:  .stamps/bi
-mi:  .stamps/mi
+icp:    .stamps/icp
+bridge: .stamps/bridge
+bi:     .stamps/bi
+mi:     .stamps/mi
 
-.stamps/icp: $(ICP_SRCS)
-.stamps/bi:  $(BI_SRCS)
-.stamps/mi:  $(MI_SRCS)
+.stamps/icp:    $(ICP_SRCS)
+.stamps/bridge: $(BRIDGE_SRCS)
+.stamps/bi:     $(BI_SRCS) .stamps/bridge
+.stamps/mi:     $(MI_SRCS)
 
-.stamps/icp: CMD = cd icp && PATH='$(dir $(BAL)):$$PATH' ./gradlew clean build && mv build/distribution/wso2-integration-control-plane-*.zip ../dist/
-.stamps/bi:  CMD = cd bi/app && $(BAL) build && mv target/bin/icp.jar ../../dist/
-.stamps/mi:  CMD = cd mi && mvn clean install -DskipTests && mv distribution/target/wso2mi-*.zip ../dist/
+.stamps/icp:    CMD = cd icp && PATH='$(dir $(BAL)):$$PATH' ./gradlew clean build && mv build/distribution/wso2-integration-control-plane-*.zip ../dist/
+.stamps/bridge: CMD = make/build-bridge.sh $(BAL)
+.stamps/bi:     CMD = cd bi/app && bash ../../make/sync-bridge-version.sh \
+	&& $(BAL) build && mv target/bin/icp.jar ../../dist/
+.stamps/mi:     CMD = cd mi && mvn clean install -DskipTests && mv distribution/target/wso2mi-*.zip ../dist/
 
 .stamps dist:
 	@mkdir -p $@
