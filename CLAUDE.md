@@ -1,6 +1,10 @@
 # ICP
 
 ICP is management console for WSO2 integration runtimes MI, BI (monitors/on runtimes).
+UI has three levels: organizations → projects → components.
+Same feature (eg: view runtime) may exist in each levels.
+Roles can be assigned to user groups in per level basis.
+components → environment → runtime. Environment occurs here in hierarchy, but managed at org level.
 
 ## MI and BI
 
@@ -22,8 +26,11 @@ ICP is management console for WSO2 integration runtimes MI, BI (monitors/on runt
 - ./mi
 - ./bi/icp-runtime-bridge
 - ./bi/app
-- ./env : env for testing, each self-contained, feel free to make more
+- ./env : env for testing (not same as icp's environment), each self-contained, feel free to make more
 - ./env/proxied : docker compose with icp + bi + mi + PostgreSQL + OpenSearch + wire dump tools
 - ./env/bare : icp icp + bi + mi + PostgreSQL + OpenSearch running bare
 - ./downloads/ballerina-\* : used to build icp and bi
 - Makefile : `make icp`, `make start bare`
+
+# QA Testing
+See TESTING.md

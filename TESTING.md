@@ -1,5 +1,6 @@
-# Testing ICP
+# QA Testing ICP
 
+Typically use proxied env or it's variant. Read env/<selected>/CLAUDE.md
 For UI testing use playwright-cli
 
 ## playwright-cli - browser automation from terminal
