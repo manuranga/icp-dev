@@ -17,11 +17,12 @@ ICP is management console for WSO2 integration runtimes MI, BI (monitors/on runt
 
 # Structure
 
+- . : a repo with submodules for icp, mi, bridge
 - ./icp
 - ./mi
 - ./bi/icp-runtime-bridge
 - ./bi/app
-- ./env : env for testing, feel free to make more
+- ./env : env for testing, each self-contained, feel free to make more
 - ./env/proxied : docker compose with icp + bi + mi + PostgreSQL + OpenSearch + wire dump tools
 - ./env/bare : icp icp + bi + mi running bare, PostgreSQL + OpenSearch on docker
 - ./downloads/ballerina-\* : used to build icp and bi
