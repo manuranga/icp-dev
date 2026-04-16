@@ -1,6 +1,6 @@
 [wso2.icp.runtime.bridge]
 serverUrl = "https://localhost:9445"
-secret = "dev-very-bare-bi.dev-secret-that-is-at-least-32-bytes-long"
+secret = "dev-bare.dev-secret-that-is-at-least-32-bytes-long"
 integration = "sample-integration"
 project = "sample-project"
 environment = "dev"
@@ -8,8 +8,3 @@ heartbeatInterval = 10
 
 [ballerina.log]
 format = "logfmt"
-[[ballerina.log.destinations]]
-path = "logs/icp/app.log"
-
-[ballerina.observe]
-metricsLogsEnabled = true

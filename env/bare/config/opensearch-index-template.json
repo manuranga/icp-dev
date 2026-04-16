@@ -1,0 +1,25 @@
+{
+    "index_patterns": [
+        "ballerina-application-logs-*",
+        "ballerina-metrics-logs-*"
+    ],
+    "template": {
+        "mappings": {
+            "properties": {
+                "level": { "type": "keyword" },
+                "time": { "type": "date" },
+                "integration": { "type": "keyword" },
+                "message": { "type": "text" },
+                "product": { "type": "keyword" },
+                "component": { "type": "keyword" },
+                "package": { "type": "keyword" },
+                "log_type": { "type": "keyword" },
+                "app": { "type": "keyword" },
+                "app_name": { "type": "keyword" },
+                "deployment": { "type": "keyword" },
+                "module": { "type": "keyword" },
+                "icp_runtimeId": { "type": "keyword" }
+            }
+        }
+    }
+}

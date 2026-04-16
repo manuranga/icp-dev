@@ -16,6 +16,13 @@ password = "wso2carbon"
 alias = "symmetric.key.value"
 algorithm = "AES"
 
+[mediation]
+flow.statistics.enable=true
+flow.statistics.capture_all=true
+
+[analytics]
+enabled = true
+
 [icp_config]
 enabled = true
 icp_url = "https://proxy:9456"

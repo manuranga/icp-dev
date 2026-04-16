@@ -24,6 +24,6 @@ ICP is management console for WSO2 integration runtimes MI, BI (monitors/on runt
 - ./bi/app
 - ./env : env for testing, each self-contained, feel free to make more
 - ./env/proxied : docker compose with icp + bi + mi + PostgreSQL + OpenSearch + wire dump tools
-- ./env/bare : icp icp + bi + mi running bare, PostgreSQL + OpenSearch on docker
+- ./env/bare : icp icp + bi + mi + PostgreSQL + OpenSearch running bare
 - ./downloads/ballerina-\* : used to build icp and bi
 - Makefile : `make icp`, `make start bare`

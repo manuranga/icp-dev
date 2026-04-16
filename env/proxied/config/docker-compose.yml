@@ -155,6 +155,7 @@ services:
               -keystore /opt/mi/repository/resources/security/client-truststore.jks \
               -storepass wso2carbon \
             && rm /tmp/proxy-cert.crt
+        COPY config/mi-sample-api/ /opt/mi/repository/deployment/server/synapse-configs/default/api/
         RUN sed -i \
               -e '/^appender\.CARBON_LOGFILE\.fileName/d' \
               -e "s|^appender\.CARBON_LOGFILE\.filePattern.*|appender.CARBON_LOGFILE.filePattern = \$\{sys:logfiles.home\}/wso2carbon-%d{MM-dd-yyyy}-%i.log|" \
@@ -202,7 +203,8 @@ services:
     volumes:
       - ./logs/bi:/var/log/ballerina:ro
       - ./logs/mi:/var/log/mi:ro
-      - ./mounts/fluent-bit:/fluent-bit/db
+      - ./mounts/fluent-bit-db:/fluent-bit/db
+      - ./mounts/fluent-bit-buffer:/fluent-bit/buffer
     depends_on:
       opensearch-setup:
         condition: service_completed_successfully
