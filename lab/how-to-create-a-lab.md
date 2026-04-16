@@ -1,10 +1,10 @@
-# How to Create an Environment
+# How to Create a Lab
 
-1. Create `env/<name>/config/` with these scripts:
+1. Create `lab/<name>/config/` with these scripts:
 
 | Script | Required | Purpose |
 |--------|----------|---------|
-| `create.sh` | yes | Set up the env from dist artifacts |
+| `create.sh` | yes | Set up the lab from dist artifacts |
 | `up.sh` | yes | Start all components |
 | `stop.sh` | yes | Stop all components |
 | `down.sh` | no | Extra cleanup before lifecycle wipes non-config files |
@@ -13,9 +13,9 @@
 2. Scripts run with these exported variables:
 
 - `ROOT` — repo root
-- `ENV_DIR` — `env/<name>`
+- `LAB_DIR` — `lab/<name>`
 - `DIST_DIR` — `dist/`
-- `CONFIG_DIR` — `env/<name>/config`
+- `CONFIG_DIR` — `lab/<name>/config`
 
 3. Source `make/helpers.sh` in your scripts for these:
 

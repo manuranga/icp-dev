@@ -26,11 +26,11 @@ components → environment → runtime. Environment occurs here in hierarchy, bu
 - ./mi
 - ./bi/icp-runtime-bridge
 - ./bi/app
-- ./env : env for testing (not same as icp's environment), each self-contained, feel free to make more
-- ./env/proxied : docker compose with icp + bi + mi + PostgreSQL + OpenSearch + wire dump tools
-- ./env/bare : icp icp + bi + mi + PostgreSQL + OpenSearch running bare
+- ./lab : local test setups, each self-contained, feel free to make more
+- ./lab/proxied : docker compose with icp + bi + mi + PostgreSQL + OpenSearch + wire dump tools
+- ./lab/bare : icp + bi + mi + PostgreSQL + OpenSearch running bare
 - ./downloads/ballerina-\* : used to build icp and bi
-- Makefile : `make icp`, `make start bare`
+- Makefile : `make icp`, `make start bare`, **MUST** use make commands when relevant.
 
 # QA Testing
 See TESTING.md

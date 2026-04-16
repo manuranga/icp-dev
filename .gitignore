@@ -1,8 +1,8 @@
 downloads/
 .stamps
 dist/
-env/*/*
-!env/*/config/
+lab/*/*
+!lab/*/config/
 bi/app/target
 .playwright-cli/
 bi/app/Dependencies.toml

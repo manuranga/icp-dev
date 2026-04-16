@@ -14,15 +14,15 @@ echo "OpenSearch ready" >&2
 
 curl -sf -X PUT "http://localhost:9200/_index_template/integration-logs" \
     -H "Content-Type: application/json" \
-    -d @"$ENV_DIR/opensearch-index-template.json" >&2
+    -d @"$LAB_DIR/opensearch-index-template.json" >&2
 echo >&2
 
 # ── Fluent Bit ──
-logged_run fluent-bit bash -c "cd '$ENV_DIR/fluent-bit' && fluent-bit -c fluent-bit.conf"
+logged_run fluent-bit bash -c "cd '$LAB_DIR/fluent-bit' && fluent-bit -c fluent-bit.conf"
 echo "Fluent Bit started" >&2
 
 # ── ICP ──
-logged_run icp "$ENV_DIR/icp/bin/icp.sh"
+logged_run icp "$LAB_DIR/icp/bin/icp.sh"
 
 # ── BI ──
-logged_run bi bash -c "cd '$ENV_DIR/bi' && java -jar icp.jar"
+logged_run bi bash -c "cd '$LAB_DIR/bi' && java -jar icp.jar"
