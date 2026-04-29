@@ -7,3 +7,4 @@ lab/*/*
 bi/app/target
 .playwright-cli/
 bi/app/Dependencies.toml
+artifacts/bi/*/target/

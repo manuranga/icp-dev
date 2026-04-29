@@ -9,7 +9,7 @@ components → environment → runtime. Environment occurs here in hierarchy, bu
 ## MI and BI
 
 - MI (Micro Integrator): A Product, Java. Contains many artifacts. Mgt API with JWT auth.
-- BI: VSCode fork called Ballerina Integrator. But in this context, BI is an app (artifact) written _in_ BI, embedding icp-runtime-bridge.
+- BI: VSCode fork called Ballerina Integrator. But in this context, BI is an app (artifact) written _in_ BI, embedding the bridge.
 
 |                | BI                           | MI          |
 | -------------- | ---------------------------- | ----------- |
@@ -24,13 +24,15 @@ components → environment → runtime. Environment occurs here in hierarchy, bu
 - . : a repo with submodules for icp, mi, bridge (update as needed, it's safe to revert any local changes)
 - ./icp
 - ./mi
-- ./bi/icp-runtime-bridge
-- ./bi/app
+- ./bridge : icp-runtime-bridge submodule
+- ./artifacts/bi/
+- ./artifacts/mi/
 - ./lab : local test setups, each self-contained, feel free to make more. Always leave the lab in a better state that you found.
 - ./lab/proxied : docker compose with icp + bi + mi + PostgreSQL + OpenSearch + wire dump tools
 - ./lab/bare : icp + bi + mi + PostgreSQL + OpenSearch running bare
-- ./downloads/ballerina-\* : used to build icp and bi
-- Makefile : `make icp`, `make start bare`, **MUST** use make commands when relevant.
+- ./downloads/ballerina-\* : used to build icp and bridge
+- Makefile : `make icp`, `make bridge`, `make start bare`, **MUST** use make commands when relevant.
+
 
 # QA Testing
 See TESTING.md

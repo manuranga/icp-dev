@@ -4,6 +4,6 @@
 [submodule "mi"]
 	path = mi
 	url = git@github.com:wso2/product-micro-integrator.git
-[submodule "bi/icp-runtime-bridge"]
-	path = bi/icp-runtime-bridge
+[submodule "bridge"]
+	path = bridge
 	url = git@github.com:wso2/icp-runtime-bridge.git

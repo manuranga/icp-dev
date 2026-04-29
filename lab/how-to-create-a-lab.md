@@ -22,6 +22,8 @@
 - `logged_run <name> <cmd...>` — run in background, write pid + log
 - `pid_alive <name>` — true if component is running
 - `pid_stop <name>` — kill children + parent, remove pid file
+- `copy_bi_artifact <name> <local-bridge|remote-bridge[:version]> <dest>` — build and copy a BI artifact
+- `copy_mi_artifact <filename.xml> <dest-dir>` — copy an MI artifact XML
 
 4. Put any patch files or docker-compose configs in `config/`. This directory survives `reset`.
 
@@ -32,3 +34,7 @@ make start <name>
 make stop <name>
 make reset <name>
 ```
+
+## Artifacts
+
+Some labs need specific artifact. Create those as needed in `artifacts/bi/` or `artifacts/mi/`. Otherwise link to existing.
