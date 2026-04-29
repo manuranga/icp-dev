@@ -21,12 +21,12 @@ components → environment → runtime. Environment occurs here in hierarchy, bu
 
 # Structure
 
-- . : a repo with submodules for icp, mi, bridge
+- . : a repo with submodules for icp, mi, bridge (update as needed, it's safe to revert any local changes)
 - ./icp
 - ./mi
 - ./bi/icp-runtime-bridge
 - ./bi/app
-- ./lab : local test setups, each self-contained, feel free to make more
+- ./lab : local test setups, each self-contained, feel free to make more. Always leave the lab in a better state that you found.
 - ./lab/proxied : docker compose with icp + bi + mi + PostgreSQL + OpenSearch + wire dump tools
 - ./lab/bare : icp + bi + mi + PostgreSQL + OpenSearch running bare
 - ./downloads/ballerina-\* : used to build icp and bi

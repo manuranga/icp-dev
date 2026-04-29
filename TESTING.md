@@ -1,11 +1,11 @@
 # QA Testing ICP
 
-Typically use proxied lab or its variant. Read lab/<selected>/CLAUDE.md
-For UI testing use playwright-cli (npm @playwright/cli)
+Typically use proxied lab or its variant for debugging or issue discovery. Otherwise, select/create correct lab. Read lab/<selected>/CLAUDE.md
+When asked to test, do not rely on build time testing. **MUST** up a lab and test. Prefer UI tests over API (curl) testing.
 
-## playwright-cli - browser automation from terminal
+## UI Testing
 
-Must use headed mode.
+Use playwright-cli (npm @playwright/cli), Must use headed mode unless asked.
 
 - browser: open --headed [url], attach [name], close, goto <url>, resize <w> <h>
 - nav: go-back, go-forward, reload
