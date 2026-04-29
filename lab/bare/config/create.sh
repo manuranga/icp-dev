@@ -34,10 +34,11 @@ cp "$CONFIG_DIR/Config.toml" "$LAB_DIR/bi/Config.toml"
 
 # ── Fluent Bit ──
 mkdir -p "$LAB_DIR/fluent-bit/db" "$LAB_DIR/fluent-bit/buffer"
-BI_LOG_DIR="$LAB_DIR/bi/logs"
+BI_LOG_DIR="$LAB_DIR/bi/logs"  # now contains app.log + metrics.log (separate files)
 sed "s|\${BI_LOG_DIR}|$BI_LOG_DIR|g" "$CONFIG_DIR/fluent-bit.conf" > "$LAB_DIR/fluent-bit/fluent-bit.conf"
 cp "$CONFIG_DIR/parsers.conf" "$LAB_DIR/fluent-bit/parsers.conf"
 cp "$CONFIG_DIR/scripts.lua"  "$LAB_DIR/fluent-bit/scripts.lua"
 
 # ── OpenSearch index template ──
 cp "$CONFIG_DIR/opensearch-index-template.json" "$LAB_DIR/opensearch-index-template.json"
+cp "$CONFIG_DIR/opensearch-metrics-index-template.json" "$LAB_DIR/opensearch-metrics-index-template.json"

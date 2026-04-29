@@ -12,9 +12,12 @@ done
 curl -sf http://localhost:9200 >/dev/null || { echo "OpenSearch failed to start" >&2; exit 1; }
 echo "OpenSearch ready" >&2
 
-curl -sf -X PUT "http://localhost:9200/_index_template/integration-logs" \
+curl -sf -X PUT "http://localhost:9200/_index_template/integration-app-logs" \
     -H "Content-Type: application/json" \
     -d @"$LAB_DIR/opensearch-index-template.json" >&2
+curl -sf -X PUT "http://localhost:9200/_index_template/integration-metrics-logs" \
+    -H "Content-Type: application/json" \
+    -d @"$LAB_DIR/opensearch-metrics-index-template.json" >&2
 echo >&2
 
 # ── Fluent Bit ──

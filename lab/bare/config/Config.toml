@@ -6,10 +6,14 @@ project = "sample-project"
 environment = "dev"
 heartbeatInterval = 10
 
-[ballerina.log]
-format = "logfmt"
-[[ballerina.log.destinations]]
-path = "logs/icp/app.log"
-
 [ballerina.observe]
 metricsLogsEnabled = true
+
+[ballerina.log]
+format = "logfmt"
+
+[[ballerina.log.destinations]]
+path = "./logs/app.log"
+
+[ballerinax.metrics.logs]
+logFilePath = "./logs/metrics.log"
