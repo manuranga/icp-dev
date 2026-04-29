@@ -1,0 +1,1 @@
+Downloaded from https://github.com/ballerina-platform/ballerina-distribution/tags (not nightly builds, tags not releases), unless specified use latest v2201.\* that is not a prerelease. If missing, download the zip.
