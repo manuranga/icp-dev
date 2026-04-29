@@ -15,10 +15,10 @@
         "port": 9460,
         "ssl": { "key": "./certs/server.key", "cert": "./certs/server.crt" }
       },
-      "out": { "host": "icp", "port": 9445, "https": true },
+      "out": { "host": "icp", "port": 9446, "https": true },
       "replace": {
         "response": [
-          { "from": "https://localhost:9445", "to": "https://localhost:9460" }
+          { "from": "https://localhost:9446", "to": "https://localhost:9460" }
         ]
       }
     },

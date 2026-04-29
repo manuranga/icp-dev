@@ -88,7 +88,9 @@ services:
       - ./logs/icp:/opt/icp/logs
     expose:
       - "9445"
+      - "9446"
       - "9447"
+      - "9448"
       - "9449"
     healthcheck:
       test: ["CMD-SHELL", "timeout 2 bash -c 'echo > /dev/tcp/localhost/9445' 2>/dev/null"]
