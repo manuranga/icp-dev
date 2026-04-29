@@ -29,7 +29,7 @@ do_create() {
 
 do_down() {
     [[ -x "$CONFIG_DIR/down.sh" ]] && "$CONFIG_DIR/down.sh"
-    find "$LAB_DIR" -mindepth 1 -maxdepth 1 ! -name config -exec rm -rf {} +
+    find "$LAB_DIR" -mindepth 1 -maxdepth 1 ! -name config ! -name '*.md' -exec rm -rf {} +
 }
 
 case $OP in
