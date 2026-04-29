@@ -21,7 +21,7 @@ components → environment → runtime. Environment occurs here in hierarchy, bu
 
 # Structure
 
-- . : a repo with submodules for icp, mi, bridge (update as needed, it's safe to revert any local changes)
+- . : a repo with submodules for icp, mi, bridge (git submodule update --remote often, it's safe to revert any local changes)
 - ./icp
 - ./mi
 - ./bridge : icp-runtime-bridge submodule
@@ -30,20 +30,11 @@ components → environment → runtime. Environment occurs here in hierarchy, bu
 - ./lab : local test setups, each self-contained, feel free to make more. Always leave the lab in a better state that you found.
 - ./lab/bare-bi : ICP + BI + OpenSearch + Fluent Bit
 - ./lab/bare-mi : ICP + MI
-- ./lab/bare-bi-late-binding : ICP + BI×2 (secrets obtained at runtime via Playwright)
-- ./lab/bare-mi-late-binding : ICP + MI (MI connected manually)
-- ./lab/db-opsh-docker : ICP + MI + BI (Docker PostgreSQL + OpenSearch)
+- ./lab/db-opsh-docker : ICP + MI + BI  and docker compose with PostgreSQL + OpenSearch
 - ./lab/proxied : docker compose with icp + bi + mi + PostgreSQL + OpenSearch + wire dump tools
 - ./downloads/ballerina-\* : used to build icp and bridge
 - Makefile : `make icp`, `make bridge`, `make start bare-bi`, **MUST** use make commands when relevant.
 
 
-# Artifacts
-
-Create artifacts as needed in `artifacts/bi/` or `artifacts/mi/`.
-- BI: create a new Ballerina project directory under `artifacts/bi/<name>/`.
-- MI: add individual XML files under `artifacts/mi/`.
-Lab `create.sh` scripts use `copy_bi_artifact` and `copy_mi_artifact` helpers from `make/helpers.sh`.
-
 # QA Testing
-See TESTING.md
+Test like a real customer using the browser UI. See TESTING.md
