@@ -29,7 +29,7 @@ components → environment → runtime. Environment occurs here in hierarchy, bu
 - ./artifacts/mi/
 - ./lab : local test setups, each self-contained, feel free to make more. Always leave the lab in a better state that you found.
 - ./lab/proxied : docker compose with icp + bi + mi + PostgreSQL + OpenSearch + wire dump tools
-- ./lab/bare : icp + bi + mi + PostgreSQL + OpenSearch running bare
+- ./lab/bare-bi : icp + bi + OpenSearch + Fluent Bit running bare
 - ./downloads/ballerina-\* : used to build icp and bridge
 - Makefile : `make icp`, `make bridge`, `make start bare`, **MUST** use make commands when relevant.
 
