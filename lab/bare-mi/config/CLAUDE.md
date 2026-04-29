@@ -1,7 +1,7 @@
-# Lab: bare-mi-with-artifacts
+# Lab: bare-mi
 
 ICP + MI only. No OpenSearch, Fluentbit, or BI.
-MI is pre-loaded with one of each artifact type that ICP can display.
+MI is pre-loaded with sample artifacts from `artifacts/mi/`.
 
 ## Components
 
@@ -32,14 +32,14 @@ MI is pre-loaded with one of each artifact type that ICP can display.
 ## Lifecycle
 
 ```
-make start bare-mi-with-artifacts
-make stop  bare-mi-with-artifacts
-make reset bare-mi-with-artifacts
+make start bare-mi
+make stop  bare-mi
+make reset bare-mi
 ```
 
 Both ICP and MI auto-start. MI secret is pre-seeded.
 
 ## Logs
 
-- `lab/bare-mi-with-artifacts/logs/icp.log`
-- `lab/bare-mi-with-artifacts/logs/mi.log`
+- `lab/bare-mi/logs/icp.log`
+- `lab/bare-mi/logs/mi.log`
