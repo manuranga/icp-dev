@@ -24,6 +24,19 @@ pid_stop() {
     rm -f "$pid_file"
 }
 
+require_ports() {
+    local port pid busy=0
+    for port in "$@"; do
+        pid=$(lsof -nP -tiTCP:"$port" -sTCP:LISTEN 2>/dev/null | head -1)
+        [[ -n "$pid" ]] || continue
+        printf 'port %s held by pid %s (%s) in %s\n' "$port" "$pid" \
+            "$(ps -o comm= -p "$pid" 2>/dev/null)" \
+            "$(lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p' | head -1)" >&2
+        busy=1
+    done
+    (( busy == 0 )) || { echo "stop the owning lab, then retry" >&2; return 1; }
+}
+
 # ── Artifact helpers ──
 
 _bal() {
