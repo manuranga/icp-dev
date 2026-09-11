@@ -4,6 +4,7 @@ downloads/*
 dist/
 lab/*/*
 !lab/*/config/
+!lab/*/*.md
 bi/app/target
 .playwright-cli/
 bi/app/Dependencies.toml

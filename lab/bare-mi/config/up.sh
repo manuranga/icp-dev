@@ -2,6 +2,8 @@
 set -euo pipefail
 source "$ROOT/make/helpers.sh"
 
+require_ports 9445 9446 9447 9450 8290 8253 9164 8095
+
 # ── ICP ──
 logged_run icp "$LAB_DIR/icp/bin/icp.sh"
 echo "Waiting for ICP..." >&2

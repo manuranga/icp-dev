@@ -1,11 +1,16 @@
 BAL := $(abspath $(shell ls -d downloads/ballerina-*/bin/bal 2>/dev/null | sort -V | tail -1))
 ifeq ($(BAL),)
-  $(error bal not found in ./downloads)
+  ifeq ($(filter setup,$(MAKECMDGOALS)),)
+    $(error bal not found in ./downloads — run 'make setup')
+  endif
 endif
 
 include make/deps.mk
 
-.PHONY: icp bridge mi start stop reset
+.PHONY: setup icp bridge mi start stop reset
+
+setup:
+	@make/setup.sh
 
 start stop reset:
 	@./make/lifecycle.sh $@ $(word 2,$(MAKECMDGOALS))

@@ -12,6 +12,12 @@ done
 curl -sf http://localhost:9200 >/dev/null || { echo "OpenSearch failed to start" >&2; exit 1; }
 echo "OpenSearch ready" >&2
 
+for template in wso2_integration_application_log_template \
+                wso2_integration_metrics_log_template \
+                wso2_mi_application_log_template; do
+    curl -s -X DELETE "http://localhost:9200/_index_template/$template" >/dev/null 2>&1 || true
+done
+
 curl -sf -X PUT "http://localhost:9200/_index_template/wso2_integration_application_log_template" \
     -H "Content-Type: application/json" \
     -d @"$LAB_DIR/opensearch-index-template.json" >&2
