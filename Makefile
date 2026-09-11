@@ -7,7 +7,7 @@ endif
 
 include make/deps.mk
 
-.PHONY: setup icp bridge mi start stop reset
+.PHONY: setup icp icp-no-test bridge mi start stop reset
 
 setup:
 	@make/setup.sh
@@ -24,11 +24,15 @@ icp:    .stamps/icp
 bridge: .stamps/bridge
 mi:     .stamps/mi
 
+# Dist only, no tests (~25s vs ~2.5min). Never stamps, so `make icp` still runs the tested build.
+icp-no-test: | dist
+	@make/logged-run.sh icp-no-test "make/build-icp.sh $(BAL) 'clean packageICP'"
+
 .stamps/icp:    $(ICP_SRCS)
 .stamps/bridge: $(BRIDGE_SRCS)
 .stamps/mi:     $(MI_SRCS)
 
-.stamps/icp:    CMD = cd icp && PATH='$(dir $(BAL)):$$PATH' ./gradlew clean build && mv build/distribution/wso2-integration-control-plane-*.zip ../dist/
+.stamps/icp:    CMD = make/build-icp.sh $(BAL)
 .stamps/bridge: CMD = make/build-bridge.sh $(BAL)
 .stamps/mi:     CMD = cd mi && mvn clean install -DskipTests && mv distribution/target/wso2mi-*.zip ../dist/
 

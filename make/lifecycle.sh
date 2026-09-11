@@ -35,7 +35,7 @@ do_down() {
 case $OP in
     start)
         if is_running; then echo "already running"; exit 0; fi
-        if is_stale; then do_down; fi
+        if is_stale; then "$CONFIG_DIR/stop.sh" || true; do_down; fi
         [[ -f "$LAB_DIR/.created" ]] || do_create
         "$CONFIG_DIR/up.sh"
         ;;
