@@ -18,6 +18,3 @@ copy_bi_artifact hello-world local-bridge "$LAB_DIR/bi"
 # ── BI-2 (second app, secret obtained from project level) ──
 mkdir -p "$LAB_DIR/bi2"
 cp "$LAB_DIR/bi/hello_world.jar" "$LAB_DIR/bi2/hello_world.jar"
-
-# ── CLAUDE.md ──
-cp "$CONFIG_DIR/CLAUDE.md" "$LAB_DIR/CLAUDE.md"

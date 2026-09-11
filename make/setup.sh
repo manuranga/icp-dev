@@ -7,8 +7,9 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 main() {
-    echo "── submodules (pinned SHAs) ──"
-    git submodule update --init --recursive
+    echo "── submodules (remote HEADs) ──"
+    git submodule update --init --remote
+    git submodule status
 
     echo "── ballerina $BAL_VERSION ──"
     install_ballerina

@@ -34,6 +34,7 @@ components → environment → runtime. Environment occurs here in hierarchy, bu
 - ./lab/proxied : docker compose with icp + bi + mi + PostgreSQL + OpenSearch + wire dump tools
 - ./downloads/ballerina-\* : used to build icp and bridge
 - Makefile : `make icp`, `make bridge`, `make start bare-bi`, **MUST** use make commands when relevant.
+  `make icp` runs the test suites, which bind 9445/9446/9450 — stop labs first. `make icp-no-test` builds the dist only (~25s).
 
 
 # QA Testing

@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
 source "$ROOT/make/helpers.sh"
-pid_alive icp && pid_alive mi
+
+pid_stop bi
+pid_stop icp

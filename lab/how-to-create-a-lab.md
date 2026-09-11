@@ -8,7 +8,7 @@
 | `up.sh` | yes | Start all components |
 | `stop.sh` | yes | Stop all components |
 | `down.sh` | no | Extra cleanup before lifecycle wipes non-config files |
-| `is-up.sh` | no | Exit 0 if any component is running |
+| `is-up.sh` | no | Exit 0 only if **every** process `up.sh` starts is alive |
 
 2. Scripts run with these exported variables:
 
@@ -19,7 +19,10 @@
 
 3. Source `make/helpers.sh` in your scripts for these:
 
-- `logged_run <name> <cmd...>` — run in background, write pid + log
+- `logged_run <name> <cmd...>` — run in background, write pid + log; skips an already-live process, so `make start` repairs a half-dead lab
+- `require_ports <port...>` — abort, naming the owning pid and its worktree, if a port is taken
+- `wait_http <label> <url>` — poll until the url answers, else fail
+- `wait_for_runtimes <count> [icp-url]` — poll ICP until `count` runtimes report RUNNING; proves heartbeats flow, not just that ports opened
 - `pid_alive <name>` — true if component is running
 - `pid_stop <name>` — kill children + parent, remove pid file
 - `copy_bi_artifact <name> <local-bridge|remote-bridge[:version]> <dest>` — build and copy a BI artifact
@@ -30,10 +33,13 @@
 5. Use it:
 
 ```
-make start <name>
+make start <name>   # ensure running: creates if needed, restarts dead components
 make stop <name>
-make reset <name>
+make reset <name>   # fresh: stop, wipe everything but config/ and *.md, create, up
 ```
+
+`up.sh` should end with readiness (`wait_http`) and, where a runtime is expected,
+`wait_for_runtimes` — a lab that returns before it works costs more than it saves.
 
 ## Artifacts
 

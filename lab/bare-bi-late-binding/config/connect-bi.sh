@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Obtain a secret from the ICP UI via playwright-cli, write Config.toml, start BI.
+# Bind BI to ICP with a secret copied from the UI.
+# Usage: connect-bi.sh < snippet.toml     (or: pbpaste | connect-bi.sh)
 set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+LAB_DIR="$ROOT/lab/bare-bi-late-binding"
+export ROOT LAB_DIR
 source "$ROOT/make/helpers.sh"
 
-echo "Obtaining BI secret from ICP UI via playwright-cli..." >&2
-SNIPPET=$("$CONFIG_DIR/obtain-secret.sh")
-[[ -n "$SNIPPET" ]] || { echo "Failed to obtain secret snippet" >&2; exit 1; }
-echo "Secret obtained" >&2
-
-# Fill in placeholders
 CONFIG="$LAB_DIR/bi/Config.toml"
-echo "$SNIPPET" > "$CONFIG"
+cat > "$CONFIG"
+[[ -s "$CONFIG" ]] || { echo "no snippet on stdin" >&2; exit 1; }
 
 sed -i '' \
     -e 's|<project name>|sample-project|' \
@@ -19,7 +19,6 @@ sed -i '' \
     -e 's|# serverUrl=.*|serverUrl = "https://localhost:9445"|' \
     "$CONFIG"
 
-# Append extra settings
 cat >> "$CONFIG" <<'EOF'
 heartbeatInterval = 10
 
@@ -29,8 +28,7 @@ EOF
 
 echo "Config.toml written:" >&2
 cat "$CONFIG" >&2
-echo >&2
 
-# ── Start BI ──
 logged_run bi bash -c "cd '$LAB_DIR/bi' && java -jar hello_world.jar"
-echo "BI started" >&2
+wait_http BI http://localhost:9090/greeting
+wait_for_runtimes 1
