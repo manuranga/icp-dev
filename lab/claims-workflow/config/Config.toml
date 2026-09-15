@@ -1,0 +1,28 @@
+[wso2.icp.runtime.bridge]
+serverUrl = "https://localhost:9445"
+secret = "dev-workflow-lab.dev-secret-that-is-at-least-32-bytes-long"
+integration = "claims-workflow"
+project = "workflow-project"
+environment = "dev"
+heartbeatInterval = 10
+# Without this the bridge publishes workflow metadata but refuses tunneled commands,
+# so every console view answers "no runtime can serve this environment".
+enableWorkflowManagement = true
+
+[ballerina.workflow]
+mode = "SELF_HOSTED"
+url = "localhost:7233"
+namespace = "default"
+taskQueue = "CLAIMS_TASK_QUEUE"
+
+[ballerina.observe]
+metricsLogsEnabled = true
+
+[ballerina.log]
+format = "logfmt"
+
+[[ballerina.log.destinations]]
+path = "./logs/app.log"
+
+[ballerinax.metrics.logs]
+logFilePath = "./logs/metrics.log"

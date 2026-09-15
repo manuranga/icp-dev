@@ -1,0 +1,16 @@
+{
+    "index_patterns": [
+        "ballerina-metrics-logs-*",
+        "mi-metrics-logs-*"
+    ],
+    "template": {
+        "mappings": {
+            "properties": {
+                "time": { "type": "date" },
+                "message": { "type": "text" },
+                "response_time_seconds": { "type": "float" },
+                "response_time": { "type": "long" }
+            }
+        }
+    }
+}

@@ -21,19 +21,22 @@ components → environment → runtime. Environment occurs here in hierarchy, bu
 
 # Structure
 
-- . : a repo with submodules for icp, mi, bridge (git submodule update --remote often, it's safe to revert any local changes)
+- . : a repo with submodules for icp, mi, bridge, workflow (git submodule update --remote often, it's safe to revert any local changes)
 - ./icp
 - ./mi
 - ./bridge : icp-runtime-bridge submodule
+- ./workflow : module-ballerina-workflow submodule — the durable workflow engine BI apps import
 - ./artifacts/bi/ : BI artifacts (Ballerina projects). Each subdirectory is one artifact.
 - ./artifacts/mi/ : MI artifacts (individual XML files).
 - ./lab : local test setups, each self-contained, feel free to make more. Always leave the lab in a better state that you found.
 - ./lab/bare-bi : ICP + BI + OpenSearch + Fluent Bit
+- ./lab/claims-workflow : ICP + a durable-workflow BI app + Temporal + OpenSearch + Fluent Bit
+  (`./workflow` is the engine, `lab/claims-workflow` is the lab that runs it)
 - ./lab/bare-mi : ICP + MI
 - ./lab/db-opsh-docker : ICP + MI + BI  and docker compose with PostgreSQL + OpenSearch
 - ./lab/proxied : docker compose with icp + bi + mi + PostgreSQL + OpenSearch + wire dump tools
-- ./downloads/ballerina-\* : used to build icp and bridge
-- Makefile : `make icp`, `make bridge`, `make start bare-bi`, **MUST** use make commands when relevant.
+- ./downloads/ballerina-\* : used to build icp, bridge and workflow
+- Makefile : `make icp`, `make bridge`, `make workflow`, `make start bare-bi`, **MUST** use make commands when relevant.
   `make icp` runs the test suites, which bind 9445/9446/9450 — stop labs first. `make icp-no-test` builds the dist only (~25s).
 
 
