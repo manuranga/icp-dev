@@ -162,6 +162,20 @@ _icp_token() {
         sed -n 's/.*"token":"\([^"]*\)".*/\1/p'
 }
 
+# The id of the first RUNNING runtime, for labs that must stamp it onto telemetry themselves.
+_icp_runtime_id() {
+    local url=${1:-https://localhost:9446} token env
+    token=$(_icp_token "$url")
+    for env in $(_icp_gql "$url" "$token" '{ environments(orgUuid: "default") { items { id } } }' |
+                 grep -o '"id":"[^"]*' | cut -d'"' -f4); do
+        # An environment with no runtime is normal, and greps that match nothing must not look
+        # like failure to a caller running under `set -e`.
+        _icp_gql "$url" "$token" "{ runtimes(environmentId: \"$env\") { items { runtimeId status } } }" |
+            { grep -o '"runtimeId":"[^"]*", "status":"RUNNING"' || true; } | head -1 | cut -d'"' -f4
+    done
+    return 0
+}
+
 _icp_running_count() {
     local url=$1 token=$2 env total=0
     for env in $(_icp_gql "$url" "$token" '{ environments(orgUuid: "default") { items { id } } }' |

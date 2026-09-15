@@ -1,0 +1,15 @@
+{
+    "index_patterns": [
+        "ballerina-application-logs-*",
+        "mi-application-logs-*"
+    ],
+    "template": {
+        "mappings": {
+            "properties": {
+                "time": { "type": "date" },
+                "message": { "type": "text" },
+                "icp_runtimeId": { "type": "keyword" }
+            }
+        }
+    }
+}
